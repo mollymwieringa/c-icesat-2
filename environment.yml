@@ -11,6 +11,11 @@ dependencies:
   - numpy
   - scipy
   - dask
+  - dask-jobqueue
   - netcdf4
   - pandas
   - matplotlib
+  - ipykernel
+  - seaborn
+  - f90nml
+  
