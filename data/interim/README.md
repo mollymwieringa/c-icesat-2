@@ -10,15 +10,15 @@ symlink ('JRA55') that led to the following subdirectory structure on
 /glade/scratch/mollyw/archive/c-icesat-2/JRA55_perturbation <br>
 - |---- JRA55_perturbation
     - |---- 3hour
-        - |---- (file) JRA.v1.5_{var}_3hour_{year}.nc
+        - |---- (file) JRA.v1.5_{var}/_3hour/_{year}.nc
     - |---- daily
-        - |---- (file) JRA.v1.5_{var}_daily_{year}.nc
+        - |---- (file) JRA.v1.5_{var}/_daily/_{year}.nc
     - |---- diffs
-        - |---- (file) diff_JRA.v1.5_{var}_daily_{year2}-{year1}.nc
+        - |---- (file) diff_JRA.v1.5_{var}/_daily/_{year2}-{year1}.nc
     - |---- perturbations
-        - |---- (file) mem{##}_JRA55.v1.5_{var}_{year}.nc
+        - |---- (file) mem{##}_JRA55.v1.5/_{var}/_{year}.nc
     - |---- postprocessed
-        - |---- (file) mem{##}_JRA55.v1.5_{var}_{year}.nc
+        - |---- (file) mem{##}_JRA55.v1.5/_{var}/_{year}.nc
 <br>
 The files stored in the /perturbations subdirectory are used by
 the 02_postprocess.sh script in ../forcing/JRA55_perturbations to 
