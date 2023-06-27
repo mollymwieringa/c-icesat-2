@@ -3,7 +3,7 @@
 #PBS -A UWAS0083
 ### Request one chunk of resources with 1 CPU and 10 GB of memory
 #PBS -l select=1:ncpus=1:mem=10GB
-#PBS -l walltime=02:00:00
+#PBS -l walltime=06:00:00
 #PBS -q economy
 #PBS -j oe
 #PBS -m ae
@@ -40,4 +40,4 @@ module load ncarenv python
 conda activate c-icesat-2
 
 ### Run analysis script
-python mkpert.py 2000 2005
+python mkpert.py 2006 2021
