@@ -8,7 +8,7 @@ For the original processing for which the perturbation scripts in
 ../forcing/JRA55_perturbations were developed, this directory contained a 
 symlink ('JRA55') that led to the following subdirectory structure on 
 /glade/scratch/mollyw/archive/c-icesat-2/JRA55_perturbation <br>
-|---- JRA55_perturbation
+- |---- JRA55_perturbation
     - |---- 3hour
         - |---- (file) JRA.v1.5_{var}_3hour_{year}.nc
     - |---- daily
