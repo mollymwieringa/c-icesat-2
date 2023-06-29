@@ -1,12 +1,4 @@
 #!/bin/bash
-#PBS -N postprocess_JRA55
-#PBS -A UWAS0083
-#PBS -l select=1:ncpus=1:mem=10GB
-#PBS -l walltime=00:30:00
-#PBS -q economy
-#PBS -j oe
-#PBS -m ae
-#PBS -M mmw906@uw.edu
 
 # ============================== Introduction =================================
 # Author - F. Massonnet
@@ -52,14 +44,14 @@ yearep=2021
 # How many members are we going to perturb?
 # NOTE: Usually the first member ("fc0") is the true forcing so it should *NOT* be perturbed.
 nmb=1
-nme=30
+nme=5
 
 # What are the directories of input and output?
-workdir=../../interim/JRA55/
-outdir=../../interim/JRA55/postprocessed/
-
+workdir=`realpath ../../interim/JRA55/perturbations/`
 # If outdir does not exist, create it
-mkdir -p $outdir
+mkdir -p ../../interim/JRA55/postprocessed/
+outdir=`realpath ../../interim/JRA55/postprocessed/`
+ogdir=`realpath ../../interim/JRA55/3hour/`
 
 # =============================================================================
 # ============================== Script Starts ================================
@@ -141,39 +133,42 @@ do
         # in fact (ndays - 1) * 8 + 1 points. So we need to append the last day to the data twice 
         # and remove the last time frame. 
 
+        # Make the record dimension for the file of interest time
+        ncks --mk_rec_dmn time                     ${workdir}/mem${mem}_JRA.v1.5_${var}_${year}.nc     ${workdir}/mem${mem}_JRA.v1.5_${var}_${year}.nc.0
+        
         # Extract the last time frame
-        ncks -F -O -d time,365,365                 ${workdir}/perturbations/mem${mem}_JRA55.v1.5_${var}_${year}.nc   ${workdir}/perturbations/mem${mem}_${year}_tmp1.nc
+        ncks -F -O -d time,365,365                 ${workdir}/mem${mem}_JRA.v1.5_${var}_${year}.nc.0   ${workdir}/mem${mem}_${var}_${year}_tmp1.nc
 
         # Append the last time frame
-        ncrcat -F -O                               ${workdir}/perturbations/mem${mem}_JRA55.v1.5_${var}_${year}.nc   ${workdir}/perturbations/mem${mem}_${year}_tmp1.nc      ${workdir}/perturbations/mem${mem}_${year}_tmp2.nc
+        ncrcat -F -O                               ${workdir}/mem${mem}_JRA.v1.5_${var}_${year}.nc.0   ${workdir}/mem${mem}_${var}_${year}_tmp1.nc        ${workdir}/mem${mem}_${var}_${year}_tmp2.nc
 
         # Set time axis
-        cdo settaxis,${year}-01-01,00:00:00,1day   ${workdir}/perturbations/mem${mem}_${year}_tmp2.nc                ${workdir}/perturbations/mem${mem}_${year}_tmp3.nc
+        cdo settaxis,${year}-01-01,00:00:00,1day   ${workdir}/mem${mem}_${var}_${year}_tmp2.nc         ${workdir}/mem${mem}_${var}_${year}_tmp3.nc
 
         # Interpolate to 3-hourly
-        cdo inttime,${year}-01-01,00:00:00,${freq} ${workdir}/perturbations/mem${mem}_${year}_tmp3.nc                ${workdir}/perturbations/mem${mem}_${year}_tmp4.nc
+        cdo inttime,${year}-01-01,00:00:00,${freq} ${workdir}/mem${mem}_${var}_${year}_tmp3.nc         ${workdir}/mem${mem}_${var}_${year}_tmp4.nc
 
         # Remove the last time frame
-        ncks -F -O -d time,1,${ntim}               ${workdir}/perturbations/mem${mem}_${year}_tmp4.nc                ${workdir}/perturbations/mem${mem}_${year}_tmp5.nc
+        ncks -F -O -d time,1,${ntim}               ${workdir}/mem${mem}_${var}_${year}_tmp4.nc         ${workdir}/mem${mem}_${var}_${year}_tmp5.nc
 
         # Add the desired fraction alpha of the perturbation to the true forcing
-        cdo add -mulc,${alpha}                     ${workdir}/perturbations/mem${mem}_${year}_tmp5.nc                ${workdir}/${freq}/JRA.v1.5_${var}_${freq}_${year}.nc  ${workdir}/perturbations/mem${mem}_JRA55.v1.5_${var}_${year}.nc.0
+        cdo add -mulc,${alpha}                     ${workdir}/mem${mem}_${var}_${year}_tmp5.nc         ${ogdir}/JRA.v1.5_${var}_${freq}_${year}.nc ${workdir}/mem${mem}_JRA.v1.5_${var}_${year}.nc.1
 
         # Ensure physical bounds
-        cdo setrtoc,-10000000000,${min},${max}     ${workdir}/perturbations/mem${mem}_JRA55.v1.5_${var}_${year}.nc.0 ${workdir}/perturbations/mem${mem}_JRA55.v1.5_${var}_${year}.nc.1
-        cdo setrtoc,${max},10000000000,${max}      ${workdir}/perturbations/mem${mem}_JRA55.v1.5_${var}_${year}.nc.1 ${workdir}/perturbations/mem${mem}_JRA55.v1.5_${var}_${year}.nc.2
+        cdo setrtoc,-10000000000,${min},${max}     ${workdir}/mem${mem}_JRA.v1.5_${var}_${year}.nc.1   ${workdir}/mem${mem}_JRA.v1.5_${var}_${year}.nc.2
+        cdo setrtoc,${max},10000000000,${max}      ${workdir}/mem${mem}_JRA.v1.5_${var}_${year}.nc.2   ${workdir}/mem${mem}_JRA.v1.5_${var}_${year}.nc.3
 
         # Set the time units to allow nice reading
-        cdo settunits,years                        ${workdir}/perturbations/mem${mem}_JRA55.v1.5_${var}_${year}.nc.2 ${outdir}/mem${mem}_JRA55.v1.5_${var}_${year}.nc
+        cdo settunits,years                        ${workdir}/mem${mem}_JRA.v1.5_${var}_${year}.nc.3   ${outdir}/mem${mem}_JRA.v1.5_${var}_${year}.nc
 
         # Add description in the header
-        ncatted -O -a description,${fvar},a,c,"Perturbed version of JRA55 variable ${fvar} for year ${year} (member mem${mem}). Strength of perturbation is ${alpha} times the year-to-year differences estimated over the ${yearbp}-${yearep} reference period. For more details: mmw906@uw.edu or francois.massonnet@bsc.es" ${outdir}/mem${mem}_JRA55.v1.5_${var}_${year}.nc
+        ncatted -O -a description,${fvar},a,c,"Perturbed version of JRA55 variable ${fvar} for year ${year} (member mem${mem}). Strength of perturbation is ${alpha} times the year-to-year differences estimated over the ${yearbp}-${yearep} reference period. For more details: mmw906@uw.edu or francois.massonnet@bsc.es" ${outdir}/mem${mem}_JRA.v1.5_${var}_${year}.nc
 
         # Give general permission to access, read, and write the file
-        chmod 777 ${outdir}/mem${mem}_JRA55.v1.5_${var}_${year}.nc
+        chmod 777 ${outdir}/mem${mem}_JRA.v1.5_${var}_${year}.nc
 
         # Clean up by removing all the temporary files
-        rm -f ${workdir}/perturbations/mem${mem}_JRA55.v1.5_${var}_${year}.nc.? ${workdir}/perturbations/mem${mem}_${year}_tmp?.nc
+        rm -f ${workdir}/mem${mem}_JRA.v1.5_${var}_${year}.nc.? ${workdir}/mem${mem}_${var}_${year}_tmp?.nc
 
     done
 done
