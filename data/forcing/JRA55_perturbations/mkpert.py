@@ -24,8 +24,8 @@ file_vars = ['t_10', 'q_10', 'u_10', 'v_10', 'lwdn', 'swdn', 'prec']
 diff_dir = '../../interim/JRA55/diffs/'
 
 # set the time period used to calculated annual differences
-yearbp = 2000
-yearep = 2021
+yearbp = 1990
+yearep = 2019
 
 # set the years for which new forcings must be perturbed
 yearb = int(sys.argv[1])

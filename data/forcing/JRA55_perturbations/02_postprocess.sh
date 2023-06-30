@@ -38,8 +38,8 @@ yeare=$3  # third argument read as yeare
 
 # First and end years defining the reference period on which
 # the perturbations were created (must match those in preprocess.bash and in mkpert.R)
-yearbp=2000
-yearep=2021
+yearbp=1990
+yearep=2019
 
 # How many members are we going to perturb?
 # NOTE: Usually the first member ("fc0") is the true forcing so it should *NOT* be perturbed.
@@ -88,21 +88,21 @@ case ${var} in
         ;;
     lwdn)
         min=0.0
-        max=1000.0
+        max=125.0 # calculated from Massonnet's bound for daily lwdn (1000/8) 
         freq=3hour
         ntim=2920
         fvar=${var}
         ;;
     swdn)
         min=0.0
-        max=1000.0
+        max=125.0 # calculated from Massonnet's bound for daily swnd (1000/8)
         freq=3hour
         ntim=2920
         fvar=${var}
         ;;
     prec)
         min=0.0
-        max=0.01
+        max=0.00125 # calculated from Massonnet's bound for daily prec (0.01/8)
         freq=3hour
         ntim=2920
         fvar=prec
@@ -117,7 +117,7 @@ for year in `seq ${yearb} ${yeare}`
 do 
     for member in `seq ${nmb} ${nme}`
     do 
-        if [ ${member} == 0 ]
+        if [ ${member}==0 ]
         then 
             echo "Warning!"
             echo "Member 0 is the true forcing. It should not be perturbed."

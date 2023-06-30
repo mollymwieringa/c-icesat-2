@@ -75,19 +75,19 @@ case ${var} in
         ;;
     lwdn)
         min=0.0 	# Min and max values allowed
-        max=1000.0
+        max=125.0   # Calculated from Massonnet's bound for daily lwnd (1000/8)
         freq=3hour
         fvar=${var} 
         ;;
     swdn)
         min=0.0 	# Min and max values allowed
-        max=1000.0
+        max=125.0   # Calculated from Massonnet's bound for daily swnd (1000/8)
         freq=3hour
         fvar=${var} 
         ;;
     prec)
         min=0.0 	# Min and max values allowed
-        max=0.01
+        max=0.00125 # Calculated from Massonnet's bound for daily prec (0.01/8)
         freq=3hour
         fvar=${var} 
         ;;
@@ -115,7 +115,7 @@ do
     rm tmp.${year}.nc
 
     # calculate daily means
-    if [ ${freq} != 1day ]; then
+    if [ ${freq}!=1day ]; then
         cdo daymean ${workdir}/JRA.v1.5_${var}_${freq}_${year}.nc ${workdir}/JRA.v1.5_${var}_daily_${year}.nc
     else
         cp ${workdir}/JRA.v1.5_${var}_${freq}_${year}.nc ${workdir}/JRA.v1.5_${var}_daily_${year}.nc
@@ -123,12 +123,13 @@ do
 
     # remove leap days if any
     ndays=`cdo ntime ${workdir}/JRA.v1.5_${var}_daily_${year}.nc`
-    if [[$ndays==366]]
+    printf "Number of days in year ${year} is ${ndays}\n"
+    if [ ${ndays}==366 ]
     then
         cdo delete,day=29,month=2 ${workdir}/JRA.v1.5_${var}_daily_${year}.nc ${workdir}/JRA.v1.5_${var}_daily_${year}_noleap.nc
         mv ${workdir}/JRA.v1.5_${var}_daily_${year}_noleap.nc ${workdir}/daily/JRA.v1.5_${var}_daily_${year}.nc
     else
-        if [[$ndays!=365]]
+        if [ ${ndays}!=365 ]
         then
             echo "Number of days in year ${year} is not 365 or 366"
             exit
@@ -141,7 +142,7 @@ do
     mkdir -p ${workdir}/${freq}
 
     # calculate annual differences as long as within prescribed yearly range and save to diffs subdirectory
-    if [[ ${year} -ge $((${yearb} + 1)) ]]
+    if [ ${year} -ge $((${yearb} + 1)) ]
     then
         cdo sub ${workdir}/JRA.v1.5_${var}_daily_${year}.nc ${workdir}/daily/JRA.v1.5_${var}_daily_$((${year} - 1)).nc ${workdir}/diff_JRA.v1.5_${var}_daily_${year}-$(( ${year} - 1 )).nc
         mv ${workdir}/diff_JRA.v1.5_${var}_daily_${year}-$(( ${year} - 1 )).nc ${workdir}/diffs/diff_JRA.v1.5_${var}_daily_${year}-$(( ${year} - 1 )).nc
