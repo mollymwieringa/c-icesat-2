@@ -106,13 +106,13 @@ do
     file=`readlink -v ${sourcedir}${var}/JRA.v1.5.${var}.*.${year}.*.nc`
 
     # reset valid range in the file's attributes 
-    ncatted -O -a valid_range,${fvar},m,f,"${min},${max}" ${file} tmp.${year}.nc
+    ncatted -O -a valid_range,${fvar},m,f,"${min},${max}" ${file} tmp.${var}.${year}.nc
     
     # set the time axis 
-    cdo settaxis,${year}-01-01,00:00,${freq} tmp.${year}.nc ${workdir}/JRA.v1.5_${var}_${freq}_${year}.nc 
+    cdo settaxis,${year}-01-01,00:00,${freq} tmp.${var}.${year}.nc ${workdir}/JRA.v1.5_${var}_${freq}_${year}.nc 
     
     # remove temporary file
-    rm tmp.${year}.nc
+    rm tmp.${var}.${year}.nc
 
     # calculate daily means
     if [ ${freq}!=1day ]; then
