@@ -1,5 +1,5 @@
 #!/bin/bash
-#PBS -N postprocess_v_10_2000-2010
+#PBS -N postprocess_u_10_2000-2010
 #PBS -A UWAS0083
 #PBS -l select=1:ncpus=1:mem=10GB
 #PBS -l walltime=12:00:00
@@ -9,4 +9,4 @@
 #PBS -M mmw906@uw.edu
 
 # call the 02_postprocess.sh script in this same directory
-bash 02_postprocess.sh v_10 2000 2010
+bash 02_postprocess.sh u_10 2000 2001

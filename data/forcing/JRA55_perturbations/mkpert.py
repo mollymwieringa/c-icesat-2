@@ -32,7 +32,7 @@ yearb = int(sys.argv[1])
 yeare = int(sys.argv[2])
 
 # set the number of perturbations (the number of desired ensemble members)
-npert = 30
+npert = 5
 
 # ============================== Routine ==================================
 
@@ -126,6 +126,10 @@ for j in range(0,nvar):
     # Print completion of each variable
     print('Perturbations for ' + dir_vars[j] + ' complete!')
 
+    # release large arrays from memory
+    del state
+    del anoms
+    
 # Print completion of the script
 print('All perturbations complete!')
 print('#============================= END =================================#')

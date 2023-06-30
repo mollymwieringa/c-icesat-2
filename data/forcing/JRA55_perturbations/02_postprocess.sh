@@ -117,7 +117,7 @@ for year in `seq ${yearb} ${yeare}`
 do 
     for member in `seq ${nmb} ${nme}`
     do 
-        if [ ${member}==0 ]
+        if [ ${member} = 0 ]
         then 
             echo "Warning!"
             echo "Member 0 is the true forcing. It should not be perturbed."

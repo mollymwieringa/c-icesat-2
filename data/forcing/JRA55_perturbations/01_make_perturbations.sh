@@ -2,7 +2,7 @@
 #PBS -N make_perturbations
 #PBS -A UWAS0083
 ### Request one chunk of resources with 1 CPU and 10 GB of memory
-#PBS -l select=1:ncpus=1:mem=10GB
+#PBS -l select=1:ncpus=1:mem=50GB
 #PBS -l walltime=01:00:00
 #PBS -q economy
 #PBS -j oe

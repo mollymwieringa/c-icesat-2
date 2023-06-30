@@ -9,4 +9,4 @@
 #PBS -M mmw906@uw.edu
 
 # call the 02_postprocess.sh script in this same directory
-bash 02_postprocess.sh lwdn 2000 2011
+bash ../02_postprocess.sh lwdn 2000 2001
